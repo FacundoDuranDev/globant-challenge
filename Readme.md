@@ -11,6 +11,10 @@ JOIN jobs j ON e.job_id = j.id
 WHERE EXTRACT(YEAR FROM TO_TIMESTAMP(e.datetime, 'YYYY-MM-DD"T"HH24:MI:SS')) = 2021
 GROUP BY d.department, j.job
 ORDER BY d.department, j.job;
+<<<<<<< HEAD
+=======
+ERROR:  operator does not exist: character varying = integer
+>>>>>>> be53ad4255f3c491ebf8c1340153b2f260ba697a
 ```
 
 ```
