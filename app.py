@@ -12,16 +12,19 @@ spark = SparkSession.builder.appName(
         "/home/facundo/jars/postgresql-42.6.0.jar"
     ).getOrCreate()
 
-    properties = {
-    "user": "admin",
-    "password": "Passw0rd",
-    "driver": "org.postgresql.Driver"
-    } 
+properties = {
+"user": "admin",
+"password": "Passw0rd",
+"driver": "org.postgresql.Driver"
+} 
 @app.route("/example",methods=["POST"])
 def example_post():
     filename = request.form['filename']
     schema_type  = request.form["schema"]
-    batch_size = request.form["batch"]
+    try:
+        batch_size = int(request.form["batch"])
+    except ValueError:
+        return "invalid batch size, batch size needs to be a number"
     if batch_size > 1000:
         return "invalid batch size, maximum 1000", 400
     schema_dict = {
