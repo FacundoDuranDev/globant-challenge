@@ -30,8 +30,20 @@ def example_post():
         schema = FileSchemas().hired_schema()
     else:
         return "invalid schema"
-    dataframe = spark.read.jdbc("jdbc:postgresql://localhost:5433/postgres", "employees", properties=properties)
-    return 'INSERTED DATAFRAME'
+
+    dataframe = spark.read.schema(schema).csv(filename)
+    def write_batch_to_db(df, id):
+        df.write.jdbc(url="jdbc:postgresql://localhost:5433/postgres", table="employees", mode="append", properties=properties)
+
+    
+    dataframe.limit(batch_size).write.jdbc(url="jdbc:postgresql://localhost:5433/postgres", table="employees", mode="append", properties=properties)
+    dataframe.exceptAll(
+        dataframe.limit(batch_size)
+        ).write.foreachBatch(
+            write_batch_to_db
+        ).option("batchSize", batch_size
+        ).start()
+    return 'INSERTED BATCHS'
 
 if __name__ == '__main__':
     app.run(port=8000)
