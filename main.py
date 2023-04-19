@@ -19,7 +19,9 @@ properties = {
 def example_post():
     filename = request.form['filename']
     schema_type  = request.form["schema"]
-    
+    batch_size = request.form["batch"]
+    if batch_size > 1000:
+        return "invalid batch size, maximum 1000"
     if schema_type == "departments":
         schema = FileSchemas().dept_schema()
     elif schema_type == "jobs":
@@ -28,7 +30,6 @@ def example_post():
         schema = FileSchemas().hired_schema()
     else:
         return "invalid schema"
-
     dataframe = spark.read.jdbc("jdbc:postgresql://localhost:5433/postgres", "employees", properties=properties)
     return 'INSERTED DATAFRAME'
 
