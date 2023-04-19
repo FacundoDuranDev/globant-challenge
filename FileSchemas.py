@@ -6,7 +6,7 @@ class FileSchemas():
             StructField("id", IntegerType(), True),
             StructField("name", StringType(), True),
             StructField("datetime", StringType(), True),
-            StructField("departament_id", StringType(), True),
+            StructField("department_id", StringType(), True),
             StructField("job_id", IntegerType(), True)
             ])
 
@@ -17,8 +17,8 @@ class FileSchemas():
         ])
     
     def dept_schema(self):
-        return StructType([
-                StructField("id", IntegerType(), True),
-                StructField("departament", StringType(), True)])
+        return StructType([StructField('id', IntegerType(), True), StructField('department', StringType(), True)])
     
     
+
+
