@@ -5,10 +5,12 @@ from flask import Flask, request
 from pyspark.sql import functions as func
 
 app = Flask(__name__)
-spark = SparkSession.builder \
-    .appName("PostgreSQL example") \
-    .config("spark.driver.extraClassPath", "/home/facundo/jars/postgresql-42.6.0.jar") \
-    .getOrCreate()
+spark = SparkSession.builder.appName(
+        "PostgreSQL example"
+    ).config(
+        "spark.driver.extraClassPath",
+        "/home/facundo/jars/postgresql-42.6.0.jar"
+    ).getOrCreate()
 
     properties = {
     "user": "admin",
@@ -21,7 +23,7 @@ def example_post():
     schema_type  = request.form["schema"]
     batch_size = request.form["batch"]
     if batch_size > 1000:
-        return "invalid batch size, maximum 1000"
+        return "invalid batch size, maximum 1000", 400
     schema_dict = {
         "departments": FileSchemas().dept_schema(),
         "jobs": FileSchemas().job_schema(),
@@ -30,7 +32,7 @@ def example_post():
 
     schema = schema_dict.get(schema_type, None)
     if schema is None:
-        return "invalid schema"
+        return "invalid schema", 400
 
     dataframe = spark.read.schema(schema).csv(filename)
     def write_batch_to_db(df, id):
@@ -44,7 +46,7 @@ def example_post():
             write_batch_to_db
         ).option("batchSize", batch_size
         ).start()
-    return 'INSERTED BATCHS'
+    return 'INSERTED BATCHS', 200
 
 if __name__ == '__main__':
     app.run(port=8000)
