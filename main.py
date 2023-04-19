@@ -2,7 +2,7 @@ from pyspark.sql import SparkSession , SQLContext
 from pyspark import SparkContext, SparkConf
 from FileSchemas import FileSchemas
 from flask import Flask, request
-
+from pyspark.sql import functions as func
 
 app = Flask(__name__)
 spark = SparkSession.builder \
@@ -19,16 +19,18 @@ properties = {
 def example_post():
     filename = request.form['filename']
     schema_type  = request.form["schema"]
-
+    
     if schema_type == "departments":
         schema = FileSchemas().dept_schema()
-    if schema_type == "jobs":
+    elif schema_type == "jobs":
         schema = FileSchemas().job_schema()
-    if schema_type == "employees":
+    elif schema_type == "employees":
         schema = FileSchemas().hired_schema()
+    else:
+        return "invalid schema"
+
     dataframe = spark.read.jdbc("jdbc:postgresql://localhost:5433/postgres", "employees", properties=properties)
-    
-    return f"{dataframe.count()}"
+    return 'INSERTED DATAFRAME'
 
 if __name__ == '__main__':
     app.run(port=8000)
