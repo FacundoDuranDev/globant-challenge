@@ -10,11 +10,11 @@ spark = SparkSession.builder \
     .config("spark.driver.extraClassPath", "/home/facundo/jars/postgresql-42.6.0.jar") \
     .getOrCreate()
 
-properties = {
-"user": "admin",
-"password": "Passw0rd",
-"driver": "org.postgresql.Driver"
-} 
+    properties = {
+    "user": "admin",
+    "password": "Passw0rd",
+    "driver": "org.postgresql.Driver"
+    } 
 @app.route("/example",methods=["POST"])
 def example_post():
     filename = request.form['filename']
@@ -22,13 +22,14 @@ def example_post():
     batch_size = request.form["batch"]
     if batch_size > 1000:
         return "invalid batch size, maximum 1000"
-    if schema_type == "departments":
-        schema = FileSchemas().dept_schema()
-    elif schema_type == "jobs":
-        schema = FileSchemas().job_schema()
-    elif schema_type == "employees":
-        schema = FileSchemas().hired_schema()
-    else:
+    schema_dict = {
+        "departments": FileSchemas().dept_schema(),
+        "jobs": FileSchemas().job_schema(),
+        "employees": FileSchemas().hired_schema(),
+        }
+
+    schema = schema_dict.get(schema_type, None)
+    if schema is None:
         return "invalid schema"
 
     dataframe = spark.read.schema(schema).csv(filename)
