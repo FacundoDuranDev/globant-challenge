@@ -1,4 +1,6 @@
-
+# Proyecto Globant
+## Presentación.
+Mi nombre es Facundo Duran, soy Data Engineer y he pasado por varios proyectos de ingeniería de datos. A la hora de enfrentar los requerimientos que me pasaron, la forma en la que decidí enforcarme fue generar un script sencillo el cual utilice herramientas las cuales estoy familiarizado para generar una solución lo mas genuina posible. Decidí utilizar Pyspark para leer y escribir, Flask para levantar la API de manera sencilla. Generé en mi maquina una base de datos local de postgres. Generé testeos automatizados los cuales pasaron las pruebas. Traté de llevar adelante el proceso de la manera mas natural y real posible, hice pruebas con sqlite y cuando tuve el funcionamiento, pasé a generar una base postgres. traté de buscar claridad con los commits y utilizar el repositorio de manera apropiada para un proyecto de este tipo de una sola persona.
 ```
 SELECT d.department AS department, j.job AS job,
     COUNT(CASE WHEN EXTRACT(YEAR FROM TO_TIMESTAMP(e.datetime, 'YYYY-MM-DD"T"HH24:MI:SS')) = 2021 AND EXTRACT(QUARTER FROM TO_TIMESTAMP(e.datetime, 'YYYY-MM-DD"T"HH24:MI:SS')) = 1 THEN e.id END) AS Q1,
@@ -12,7 +14,7 @@ WHERE EXTRACT(YEAR FROM TO_TIMESTAMP(e.datetime, 'YYYY-MM-DD"T"HH24:MI:SS')) = 2
 GROUP BY d.department, j.job
 ORDER BY d.department, j.job;
 ```
-
+![image](https://user-images.githubusercontent.com/70112589/233371993-119a161c-64b3-471b-8b58-0018d9b75133.png)
 ```
 SELECT d.id, d.department AS department, COUNT(e.id) AS hired
 FROM employees e
@@ -30,3 +32,4 @@ HAVING COUNT(e.id) > (
     ) AS department_counts
 )
 ```
+![image](https://user-images.githubusercontent.com/70112589/233372282-6d3f597a-ee03-4b8d-a5d5-65d997ba0655.png)
